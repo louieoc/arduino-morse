@@ -27,7 +27,7 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
-  keyMessage("0 1 2 3 4 5 6 7 8 9 ");
+  keyMessage("0 1 2 3 4 hello out there");
 }
 
 // supply a string and the program keys it to output in morse
@@ -43,9 +43,9 @@ void keyMessage(char *message)
     }
     else
     {
-      char morseChar = '';
-      getMorse(message[i], &morseChar);
-      keyLetter(&morseChar);
+      char* morseString;
+      getMorse(message[i], morseString);
+      keyLetter(morseString);
       // if a non-whitespace character is next then wait a bit
       if (next != '\0' && next != ' ')
         delay(charSpace);
@@ -85,11 +85,11 @@ void key(int milliseconds)
 
 // converts a character to a string of morse dots and dashes
 // ignores case and anything that's not 0-9 and a-z and space
-void getMorse(char character, char *morseChar)
+void getMorse(char character, char *morseString)
 {
   if (character > 47 && character < 58)
   {
-    getMorseNumber(character, &morseChar);
+    getMorseNumber(character, morseString);
     return;
   }
     
@@ -100,61 +100,89 @@ void getMorse(char character, char *morseChar)
   switch(character)
   {
     case 'a':
-      morseChar = ".-";
+      morseString = ".-";
+      break;
     case 'b':
-      morseChar = "-...";
+      morseString = "-...";
+      break;
     case 'c':
-      morseChar = "-.-.";
+      morseString = "-.-.";
+      break;
     case 'd':
-      morseChar = "-..";
+      morseString = "-..";
+      break;
     case 'e':
-      morseChar = ".";
+      morseString = ".";
+      break;
     case 'f':
-      morseChar = "..-.";
+      morseString = "..-.";
+      break;
     case 'g':
-      morseChar = "--.";
+      morseString = "--.";
+      break;
     case 'h':
-      morseChar = "....";
+      morseString = "....";
+      break;
     case 'i':
-      morseChar = "..";
+      morseString = "..";
+      break;
     case 'j':
-      morseChar = ".---";
+      morseString = ".---";
+      break;
     case 'k':
-      morseChar = "-.-";
+      morseString = "-.-";
+      break;
     case 'l':
-      morseChar = ".-..";
+      morseString = ".-..";
+      break;
     case 'm':
-      morseChar = "--";
+      morseString = "--";
+      break;
     case 'n':
-      morseChar = "-.";
+      morseString = "-.";
+      break;
     case 'o':
-      morseChar = "---";
+      morseString = "---";
+      break;
     case 'p':
-      morseChar = ".--.";
+      morseString = ".--.";
+      break;
     case 'q':
-      morseChar = "--.-";
+      morseString = "--.-";
+      break;
     case 'r':
-      morseChar = ".-.";
+      morseString = ".-.";
+      break;
     case 's':
-      morseChar = "...";
+      morseString = "...";
+      break;
     case 't':
-      morseChar = "-";
+      morseString = "-";
+      break;
     case 'u':
-      morseChar = "..-";
+      morseString = "..-";
+      break;
     case 'v':
-      morseChar = "...-";
+      morseString = "...-";
+      break;
     case 'w':
-      morseChar = ".--";
+      morseString = ".--";
+      break;
     case 'x':
-      morseChar = "-..-";
+      morseString = "-..-";
+      break;
     case 'y':
-      morseChar = "-.--";
+      morseString = "-.--";
+      break;
     case 'z':
-      morseChar = "--..";
+      morseString = "--..";
+      break;
     case ' ':
-      morseChar = " ";
+      morseString = " ";
+      break;
     default:
-      morseChar = "";
+      morseString = "";
+      break;
   }
 }
 
