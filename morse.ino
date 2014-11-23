@@ -17,7 +17,7 @@ int dot = unit;
 int dash = unit * 3;
 int keySpace = unit;
 int charSpace = unit * 3;
-int wordSpace = unit * 7;
+int wordSpace = charSpace * 2;
 
 // the setup routine runs once when you press reset:
 void setup() {                
@@ -39,10 +39,11 @@ void keyMessage(char *message)
     char next = message[i + 1];
     if (message[i] == ' ')
     {
-      delay(wordSpace - unit);
+      delay(wordSpace);
     }
     else
     {
+      
       char* morseString;
       getMorse(message[i], morseString);
       keyLetter(morseString);
@@ -58,6 +59,10 @@ void keyMessage(char *message)
 // (periods and dashes only, like this: "-.-" for 'K')
 void keyLetter(char *letter)
 {
+  char* morseString;
+  getMorse(letter, morseString);
+
+
   int i = 0;
   while (letter[i] != '\0')
   {
