@@ -7,18 +7,19 @@
 // give it a name:
 int output = 13;
 
-// dots and dashes as per the international standard
+// dots, dashes and relative time units as per the international standard
 // http://en.wikipedia.org/wiki/Morse_code
 
 // this determines the keying speed
 int const unit = 200;
-
 int const dot = unit;
 int const dash = unit * 3;
 int const keySpace = unit;
 int const charSpace = unit * 3;
-int const wordSpace = charSpace * 2;
-int const messageSpace = wordSpace * 2;
+int const wordSpace = unit * 7;
+int const messageSpace = wordSpace * 2; // not a standard, as far as I know
+
+int const maxMorseLength = 6; // no more than 6 dots or dashes per character
 
 // the setup routine runs once when you press reset:
 void setup() {                
@@ -28,7 +29,7 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
-  keyMessage("hello world");
+  keyMessage("0 1 2 3 4 hello world");
 }
 
 // supply a string and the program keys it to output in morse
@@ -62,8 +63,8 @@ void keyMessage(char *message)
 // (periods and dashes only, like this: "-.-" for 'K')
 void keyLetter(char letter)
 {
-  char* morseString;
-  getMorse(letter, &morseString);
+  char morseString[maxMorseLength + 1]; // plus 1 for the null character
+  getMorse(letter, morseString);
   
   int i = 0;
   while (morseString[i] != '\0')
@@ -76,10 +77,7 @@ void keyLetter(char letter)
     {
       key(dash);
     }
-    else if (morseString[i] == ' ')
-    {
-      delay(wordSpace);
-    }
+
     // if this isn't end of string then wait a bit
     if (morseString[++i] != '\0')
       delay(keySpace);
@@ -95,12 +93,12 @@ void key(int milliseconds)
 }
 
 // converts a character to a string of morse dots and dashes
-// ignores case and anything that's not 0-9 and a-z and space
-void getMorse(char character, char **morseString)
+// ignores case and anything that's not 0-9 and a-z and space . , / @ ?
+void getMorse(char character, char *buffer)
 {
   if (character > 47 && character < 58)
   {
-    getMorseNumber(character, morseString);
+    getMorseNumber(character, buffer);
     return;
   }
     
@@ -108,122 +106,135 @@ void getMorse(char character, char **morseString)
   if (character > 64 && character < 91)
     character += 32;
   
+  char* morseString;
+  
   switch(character)
   {
     case 'a':
-      *morseString = ".-";
+      morseString = ".-";
       break;
     case 'b':
-      *morseString = "-...";
+      morseString = "-...";
       break;
     case 'c':
-      *morseString = "-.-.";
+      morseString = "-.-.";
       break;
     case 'd':
-      *morseString = "-..";
+      morseString = "-..";
       break;
     case 'e':
-      *morseString = ".";
+      morseString = ".";
       break;
     case 'f':
-      *morseString = "..-.";
+      morseString = "..-.";
       break;
     case 'g':
-      *morseString = "--.";
+      morseString = "--.";
       break;
     case 'h':
-      *morseString = "....";
+      morseString = "....";
       break;
     case 'i':
-      *morseString = "..";
+      morseString = "..";
       break;
     case 'j':
-      *morseString = ".---";
+      morseString = ".---";
       break;
     case 'k':
-      *morseString = "-.-";
+      morseString = "-.-";
       break;
     case 'l':
-      *morseString = ".-..";
+      morseString = ".-..";
       break;
     case 'm':
-      *morseString = "--";
+      morseString = "--";
       break;
     case 'n':
-      *morseString = "-.";
+      morseString = "-.";
       break;
     case 'o':
-      *morseString = "---";
+      morseString = "---";
       break;
     case 'p':
-      *morseString = ".--.";
+      morseString = ".--.";
       break;
     case 'q':
-      *morseString = "--.-";
+      morseString = "--.-";
       break;
     case 'r':
-      *morseString = ".-.";
+      morseString = ".-.";
       break;
     case 's':
-      *morseString = "...";
+      morseString = "...";
       break;
     case 't':
-      *morseString = "-";
+      morseString = "-";
       break;
     case 'u':
-      *morseString = "..-";
+      morseString = "..-";
       break;
     case 'v':
-      *morseString = "...-";
+      morseString = "...-";
       break;
     case 'w':
-      *morseString = ".--";
+      morseString = ".--";
       break;
     case 'x':
-      *morseString = "-..-";
+      morseString = "-..-";
       break;
     case 'y':
-      *morseString = "-.--";
+      morseString = "-.--";
       break;
     case 'z':
-      *morseString = "--..";
+      morseString = "--..";
       break;
     case '.':
-      *morseString = ".-.-.-";
+      morseString = ".-.-.-";
       break;
     case ',':
-      *morseString = "--..--";
+      morseString = "--..--";
       break;
     case '/':
-      *morseString = "-..-.";
+      morseString = "-..-.";
       break;
     case '@':
-      *morseString = ".--.-.";
+      morseString = ".--.-.";
       break;
     case '?':
-      *morseString = "..--..";
+      morseString = "..--..";
       break;
     case ' ':
-      *morseString = " ";
+      morseString = " ";
       break;
     default:
-      *morseString = "";
+      morseString = "";
       break;
   }
+  sprintf(buffer, morseString);
 }
 
-// trying to be clever and produce the pattern algorithmically
-void getMorseNumber(char const number, char **morseNumber)
+/* trying to be clever and produce the pattern algorithmically:
+1: .----
+2: ..---
+3: ...--
+4: ....-
+5: .....
+6: -....
+7: --...
+8: ---..
+9: ----.
+0: -----
+*/
+void getMorseNumber(char const number, char *buffer)
 {
     if (number < 48 || number > 57)
       return;
       
-    // initialize
-    *morseNumber = "-----";
+    int i;
+    for (i = 0; i < 5; i++) {
+      buffer[i] = 45 + (((number - i > 48) && (number - i < 54)) ? 1 : 0);
+    }
 
-    for (int i = 0; i < 5; i++)
-      *morseNumber[i] = 45 + (((number - i > 48) && (number - i < 54)) ? 1 : 0);
-
-    *morseNumber[5] = '\0';
+    buffer[5] = '\0';
 }
 
