@@ -1,6 +1,6 @@
 /*
   writes a message in morse code
-  (adapted from the "Blink" example - Louis O'Callaghan Jan 2013)
+  (adapted from the "Blink" example - Louis O'Callaghan Jan 2013-Nov 2014)
  */
  
 // Pin 13 has an LED connected on most Arduino boards.
@@ -82,6 +82,7 @@ void keyLetter(char letter)
     if (morseString[++i] != '\0')
       delay(keySpace);
   }
+  free(morseString);
 }
 
 // key on for some time period
